@@ -93,7 +93,7 @@ program
   .command('team [filepath]')
   .description('set teams to specified json filepath')
   .action((filepath) => {
-    if (!pref.students) return alertErr('No team is setup.');
+    if (!prefs.students) return alertErr('No team is setup.');
     if (!filepath && prefs.students) {
       alert('Teams currently set to: ');
       return console.log(prefs.students);
