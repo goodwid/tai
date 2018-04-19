@@ -10,7 +10,7 @@ const openGithub = require('./lib/open-github');
 const addBranches = require('./lib/addBranches');
 const {alert, alertErr} = require('./lib/cli-tools');
 
-const prefs = new Preferences('tai-dev');
+const prefs = new Preferences('tai-v2');
 
 program
   .command(' config-git <github_org> <github_token>' )
