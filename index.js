@@ -4,16 +4,16 @@ const program = require('commander');
 const sander = require('sander');
 const Preferences = require('preferences');
 
-const activateTravis = require('./lib/activateTravis');
+const activateTravis = require('./lib/activate-travis');
 const close = require('./lib/close-out');
 const openGithub = require('./lib/open-github');
-const addBranches = require('./lib/addBranches');
+const addBranches = require('./lib/add-branches');
 const {alert, alertErr} = require('./lib/cli-tools');
 
 const prefs = new Preferences('tai-v2');
 
 program
-  .command(' config-git <github_org> <github_token>' )
+  .command('config-github <github_org> <github_token>' )
   .description( 'Configure Github org and auth token.' )
   .action((github_org, github_token) => {
     prefs.github_org = github_org;
