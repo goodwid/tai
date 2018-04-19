@@ -13,11 +13,12 @@ const {alert, alertErr} = require('./lib/cli-tools');
 const prefs = new Preferences('tai-dev');
 
 program
-  .command('config-git <github_org> <github_token>')
-  .description('Configure Github org and auth token.')
+  .command(' config-git <github_org> <github_token>' )
+  .description( 'Configure Github org and auth token.' )
   .action((github_org, github_token) => {
     prefs.github_org = github_org;
     prefs.github_token = github_token;
+    alert( 'github data configured.' );
   });
 
 program
@@ -25,14 +26,18 @@ program
   .description('Configure Travis-ci.org token')
   .action(travis_token => {
     prefs.travis_token = travis_token;
+    alert( 'travis data configured.' );
   });
 
 program
-  .command('org')
-  .description('Display current Github organization.')
-  .action(() => {
-    if (prefs.github_org) return alert(`Current selected organization is ${prefs.github_org}`);
-    else return alert('There is no current Github organization selected.');
+  .command('show-config')
+  .option('-s --show_keys')
+  .description('Display current configuration data.')
+  .action((cmd) => {
+    if (cmd.show_keys && prefs.github_token) alert(`Current github token is ${prefs.github_token}`);
+    if (cmd.show_keys && prefs.travis_token) alert(`Current travis token is ${prefs.travis_token}`);
+    if (prefs.github_org) alert(`Current selected organization is ${prefs.github_org}`);
+    else return alert( 'There is no current Github organization selected.' );
   });
 
 program
@@ -42,7 +47,7 @@ program
     prefs.github_org = undefined;
     prefs.github_token = undefined;
     prefs.travis_token = undefined;
-    return alertErr('Github and Travis configurations have been removed.');
+    return alertErr( 'Github and Travis configurations have been removed.' );
   });
 
 program
@@ -88,6 +93,7 @@ program
   .command('team [filepath]')
   .description('set teams to specified json filepath')
   .action((filepath) => {
+    if (!pref.students) return alertErr('No team is setup.');
     if (!filepath && prefs.students) {
       alert('Teams currently set to: ');
       return console.log(prefs.students);

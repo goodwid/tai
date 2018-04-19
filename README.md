@@ -1,14 +1,20 @@
-# ![CF](http://i.imgur.com/7v5ASc8.png) tai
+# ![ACL](http://res.cloudinary.com/hrscywv4p/image/upload/c_limit,fl_lossy,h_50,w_50,f_auto,q_auto/v1/983693/axmqlpjyo3zmeszdr9qt.png ) tai
 a tool for managing student assignment repos
 
 ## setup
-**tai config** - to configure tai
+**tai config-github** - to store github data
 ```
-tai config <github_organization> <github_token>
+tai config-github <github_organization> <github_token>
 ```
-**tai org**: show current configuration
+**tai config-travis** - to store travis-ci token
 ```
-tai org
+tai config-travis <travis_token>
+```
+**tai show-config**: show current configuration
+
+use -s flag to show tokens.
+```
+tai show-config -s
 ```
 **tai clear**: remove current organization and Github token
 ```
@@ -26,13 +32,21 @@ json file:
 teams must be valid branch names
 
 ## run
-**tai setup** - to create unique branch for each team and set up travis.  
+**tai setup-branches** - to create unique branch for each team 
 Optional [branches] flag available to specify a set of branches different from the stored team.  JSON format required.
 ```
-tai setup <repo_name> [branches]
+tai setup-branches <repo_name> [branches]
+```
+**tai setup-travis** - to activate travis on a repo
+```
+tai setup-travis <repo_name>
 ```
 
 **tai close** - to merge team branches into unique folders in master
 ```
 tai close <repo_name>
+```
+**tai open** - shows the URI for the repo on github.com
+```
+tai open <repo_name>
 ```
