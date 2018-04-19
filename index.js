@@ -4,23 +4,28 @@ const program = require('commander');
 const sander = require('sander');
 const Preferences = require('preferences');
 
-const hooks = require('./lib/ci-hooks');
+const activateTravis = require('./lib/activateTravis');
 const close = require('./lib/close-out');
 const openGithub = require('./lib/open-github');
-const addBranches = require('./lib/add-branches');
+const addBranches = require('./lib/addBranches');
 const {alert, alertErr} = require('./lib/cli-tools');
 
-const prefs = new Preferences('tai');
-
+const prefs = new Preferences('tai-dev');
 
 program
-  .command('config <github_org> <github_token>')
+  .command('config-git <github_org> <github_token>')
   .description('Configure Github org and auth token.')
   .action((github_org, github_token) => {
     prefs.github_org = github_org;
     prefs.github_token = github_token;
   });
 
+program
+  .command('config-travis <travis_token>')
+  .description('Configure Travis-ci.org token')
+  .action(travis_token => {
+    prefs.travis_token = travis_token;
+  });
 
 program
   .command('org')
@@ -32,32 +37,40 @@ program
 
 program
   .command('clear')
-  .description('Clear current Github org and auth token.')
+  .description('Clear current Github and Travis data.')
   .action(() => {
     prefs.github_org = undefined;
     prefs.github_token = undefined;
-    return alertErr('Github configuration has been removed.');
+    prefs.travis_token = undefined;
+    return alertErr('Github and Travis configurations have been removed.');
   });
 
-
 program
-  .command('setup <repoName> [branches]')
-  .description('Create branches for the specified team.')
+  .command('setup-branches <repoName> [branches]')
+  .description('Create branches for the specified team')
   .action((repoName, branches) => {
     if (!prefs.github_org) return alertErr('No configuration found.  run config');
     prefs.branches = branches ? JSON.parse(branches) : prefs.students;
     addBranches( repoName, prefs )
-      .then(() => {
-        alert( 'branches created' );
-        hooks( repoName, prefs );
-        alert( 'hooks complete' );
-      })
+      .then(() => alert( `Branches created for ${repoName}` ))
       .catch( (err) => {
         alertErr('Error setting up repo.');
         alertErr(err);
       });
   });
 
+program
+  .command('setup-travis <repoName>')
+  .description('Activate Travis for the specified repo')
+  .action( ( repoName ) => {
+    activateTravis( repoName, prefs )
+      .then(() => alert(`Travis-CI activated for ${repoName}`))
+      .catch( err => {
+        alertErr('Error setting up Travis-CI.');
+        alertErr(err);
+      });
+  });
+    
 program
   .command('close <repoName>')
   .description('merge student branches into master folders')

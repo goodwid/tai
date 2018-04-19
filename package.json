@@ -25,12 +25,13 @@
   },
   "homepage": "https://github.com/codefellows-portland-javascript-401d2/tai#readme",
   "dependencies": {
-    "chalk": "^2.3.1",
+    "chalk": "^2.4.0",
     "github-api": "^3.0.0",
-    "nodegit": "^0.20.3",
+    "nodegit": "^0.22.0",
     "preferences": "^1.0.2",
-    "request": "^2.83.0",
+    "request": "^2.85.0",
     "sander": "^0.6.0",
+    "superagent": "^3.8.2",
     "sync-exec": "^0.6.2"
   },
   "devDependencies": {
