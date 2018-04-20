@@ -13,30 +13,35 @@ const {alert, alertErr} = require('./lib/cli-tools');
 const prefs = new Preferences('tai-v2');
 
 program
-  .command('config-github <github_org> <github_token>' )
-  .description( 'Configure Github org and auth token.' )
-  .action((github_org, github_token) => {
-    prefs.github_org = github_org;
-    prefs.github_token = github_token;
-    alert( 'github data configured.' );
-  });
-
-program
-  .command('config-travis <travis_token>')
-  .description('Configure Travis-ci.org token')
-  .action(travis_token => {
-    prefs.travis_token = travis_token;
-    alert( 'travis data configured.' );
+  .command( 'config' )
+  .option( '-g --githubToken')
+  .option( '-t --travisToken')
+  .option( '-r --githubOrg')
+  .description( 'Configure the application.' )
+  .action((...options) => {
+    const { githubOrg, githubToken, travisToken } = options[options.length-1];
+    if (githubOrg) {
+      prefs.githubOrg = githubOrg;
+      alert( 'github organization configured' );
+    }
+    if (githubToken) {
+      prefs.githubToken = githubToken;
+      alert( 'github token configured.' );
+    }
+    if (travisToken) {
+      prefs.travisToken = travisToken;
+      alert( 'travis token configured' );
+    }
   });
 
 program
   .command('show-config')
-  .option('-s --show_keys')
+  .option('-s --showKeys')
   .description('Display current configuration data.')
   .action((cmd) => {
-    if (cmd.show_keys && prefs.github_token) alert(`Current github token is ${prefs.github_token}`);
-    if (cmd.show_keys && prefs.travis_token) alert(`Current travis token is ${prefs.travis_token}`);
-    if (prefs.github_org) alert(`Current selected organization is ${prefs.github_org}`);
+    if (cmd.showKeys && prefs.githubToken) alert(`Current github token is ${prefs.githubToken}`);
+    if (cmd.showKeys && prefs.travisToken) alert(`Current travis token is ${prefs.travisToken}`);
+    if (prefs.githubOrg) alert(`Current selected organization is ${prefs.githubOrg}`);
     else return alert( 'There is no current Github organization selected.' );
   });
 
@@ -44,9 +49,9 @@ program
   .command('clear')
   .description('Clear current Github and Travis data.')
   .action(() => {
-    prefs.github_org = undefined;
-    prefs.github_token = undefined;
-    prefs.travis_token = undefined;
+    prefs.githubOrg = undefined;
+    prefs.githubToken = undefined;
+    prefs.travisToken = undefined;
     return alertErr( 'Github and Travis configurations have been removed.' );
   });
 
@@ -54,7 +59,7 @@ program
   .command('setup-branches <repoName> [branches]')
   .description('Create branches for the specified team')
   .action((repoName, branches) => {
-    if (!prefs.github_org) return alertErr('No configuration found.  run config');
+    if (!prefs.githubOrg) return alertErr('No configuration found.  run config');
     prefs.branches = branches ? JSON.parse(branches) : prefs.students;
     addBranches( repoName, prefs )
       .then(() => alert( `Branches created for ${repoName}` ))
@@ -80,7 +85,7 @@ program
   .command('close <repoName>')
   .description('merge student branches into master folders')
   .action((repoName) => {
-    if (!prefs.github_org) return alertErr('No configuration found.  run config');
+    if (!prefs.githubOrg) return alertErr('No configuration found.  run config');
     close(repoName, prefs)
       .then( () => alert(`repo "${repoName}" closed out`))
       .catch(err => {

@@ -2,13 +2,17 @@
 a tool for managing student assignment repos
 
 ## setup
-**tai config-github** - to store github data
+**tai config-github-org** - to store github data
 ```
-tai config-github <github_organization> <github_token>
+tai config-github <githubOrganization> <githubToken>
 ```
-**tai config-travis** - to store travis-ci token
+**tai config-githubToken** - to store github data
 ```
-tai config-travis <travis_token>
+tai config-github <githubOrganization> <githubToken>
+```
+**tai config-travisToken** - to store travis-ci token
+```
+tai config-travis <travisToken>
 ```
 **tai show-config**: show current configuration
 
