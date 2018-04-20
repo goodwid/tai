@@ -78,7 +78,7 @@ program
   .description('Create branches for the specified team')
   .action((repoName, branches) => {
     if (!prefs.githubOrg) return alertErr('No configuration found.  run config');
-    prefs.branches = branches ? JSON.parse(branches) : prefs.students;
+    prefs.branches = branches ? branches : prefs.students;
     addBranches( repoName, prefs )
       .then(() => alert( `Branches created for ${repoName}` ))
       .catch( (err) => {
