@@ -14,12 +14,12 @@ const prefs = new Preferences('tai-v2');
 
 program
   .command( 'config' )
-  .option( '-g --githubToken')
-  .option( '-t --travisToken')
-  .option( '-r --githubOrg')
+  .option( '-g --githubToken <githubToken>')
+  .option( '-t --travisToken <travisToken>')
+  .option( '-o --githubOrg <githubOrg>')
   .description( 'Configure the application.' )
-  .action((...options) => {
-    const { githubOrg, githubToken, travisToken } = options[options.length-1];
+  .action(options => {
+    const { githubOrg, githubToken, travisToken } = options;
     if (githubOrg) {
       prefs.githubOrg = githubOrg;
       alert( 'github organization configured' );
@@ -48,11 +48,29 @@ program
 program
   .command('clear')
   .description('Clear current Github and Travis data.')
-  .action(() => {
-    prefs.githubOrg = undefined;
-    prefs.githubToken = undefined;
-    prefs.travisToken = undefined;
-    return alertErr( 'Github and Travis configurations have been removed.' );
+  .option( '-g --githubToken')
+  .option( '-t --travisToken')
+  .option( '-o --githubOrg')
+  .action((options) => {
+    const { githubOrg, githubToken, travisToken } = options;
+    if (githubOrg) {
+      prefs.githubOrg = undefined;
+      alertErr( 'github organization cleared.' );
+    }
+    if (githubToken) {
+      prefs.githubToken = undefined;
+      alertErr( 'github token cleared.' );
+    }
+    if (travisToken) {
+      prefs.travisToken = undefined;
+      alertErr( 'travis token cleared.' );
+    }
+    if ( !githubOrg && !githubToken && !travisToken ) {
+      prefs.githubOrg = undefined;
+      prefs.githubToken = undefined;
+      prefs.travisToken = undefined;
+      alertErr( 'Github and Travis configurations have been removed.' );
+    }
   });
 
 program

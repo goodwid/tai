@@ -2,17 +2,14 @@
 a tool for managing student assignment repos
 
 ## setup
-**tai config-github-org** - to store github data
+**tai config** - to configure the stored information
+- github organization
+- github token
+- travis token
 ```
-tai config-github <githubOrganization> <githubToken>
-```
-**tai config-githubToken** - to store github data
-```
-tai config-github <githubOrganization> <githubToken>
-```
-**tai config-travisToken** - to store travis-ci token
-```
-tai config-travis <travisToken>
+tai config -o <githubOrganization> 
+           -g <githubToken>
+           -t <travisToken>
 ```
 **tai show-config**: show current configuration
 
@@ -22,15 +19,22 @@ tai show-config -s
 ```
 **tai clear**: remove current organization and Github token
 ```
+tai clear  -o <githubOrganization> 
+           -g <githubToken>
+           -t <travisToken>
+```
+clears individual configuration objects
+```
 tai clear
 ```
+clears out all configuration objects
 
 **tai team** - to set teams
-```
+``` 
 tai team <json_filepath>
 ```
 json file:
-```
+``` json
 [ "tad-and-anki", "plz-and-respond" ]
 ```
 teams must be valid branch names

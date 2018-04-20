@@ -1,6 +1,6 @@
 {
   "name": "tai",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "a tool for managing student assignment repos",
   "main": "index.js",
   "scripts": {
