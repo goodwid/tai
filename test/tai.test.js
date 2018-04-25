@@ -8,10 +8,11 @@ const tai = './tai';
 describe('tai', () => {
 
   it('config', () => {
+    const expected = 
     exec('./tai clear');
     assert.equal(exec('./tai org'), '[*] There is no current Github organization selected.\n');
-    exec('./tai config my-org my-token');
-    assert.equal(exec('./tai org'), '[*] Current selected organization is my-org\n');
+    exec('./tai config -g githubtoken -t travistoken -o githuborg');
+    assert.equal(exec('./tai show-config'), '[*] Current selected organization is my-org\n');
         
   });
 
