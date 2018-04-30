@@ -4,54 +4,83 @@ const program = require('commander');
 const sander = require('sander');
 const Preferences = require('preferences');
 
-const hooks = require('./lib/ci-hooks');
+const activateTravis = require('./lib/activate-travis');
 const close = require('./lib/close-out');
 const openGithub = require('./lib/open-github');
 const addBranches = require('./lib/add-branches');
 const {alert, alertErr} = require('./lib/cli-tools');
 
-const prefs = new Preferences('tai');
-
+const prefs = new Preferences('tai-v2');
 
 program
-  .command('config <github_org> <github_token>')
-  .description('Configure Github org and auth token.')
-  .action((github_org, github_token) => {
-    prefs.github_org = github_org;
-    prefs.github_token = github_token;
+  .command( 'config' )
+  .option( '-g --githubToken <githubToken>')
+  .option( '-t --travisToken <travisToken>')
+  .option( '-o --githubOrg <githubOrg>')
+  .description( 'Configure the application.' )
+  .action(options => {
+    const { githubOrg, githubToken, travisToken } = options;
+    if (githubOrg) {
+      prefs.githubOrg = githubOrg;
+      alert( 'github organization configured' );
+    }
+    if (githubToken) {
+      prefs.githubToken = githubToken;
+      alert( 'github token configured.' );
+    }
+    if (travisToken) {
+      prefs.travisToken = travisToken;
+      alert( 'travis token configured' );
+    }
   });
 
-
 program
-  .command('org')
-  .description('Display current Github organization.')
-  .action(() => {
-    if (prefs.github_org) return alert(`Current selected organization is ${prefs.github_org}`);
-    else return alert('There is no current Github organization selected.');
+  .command('show-config')
+  .option('-s --showKeys')
+  .description('Display current configuration data.')
+  .action((cmd) => {
+    if (cmd.showKeys && prefs.githubToken) alert(`Current github token is ${prefs.githubToken}`);
+    if (cmd.showKeys && prefs.travisToken) alert(`Current travis token is ${prefs.travisToken}`);
+    if (prefs.githubOrg) alert(`Current selected organization is ${prefs.githubOrg}`);
+    else return alert( 'There is no current Github organization selected.' );
   });
 
 program
   .command('clear')
-  .description('Clear current Github org and auth token.')
-  .action(() => {
-    prefs.github_org = undefined;
-    prefs.github_token = undefined;
-    return alertErr('Github configuration has been removed.');
+  .description('Clear current Github and Travis data.')
+  .option( '-g --githubToken')
+  .option( '-t --travisToken')
+  .option( '-o --githubOrg')
+  .action((options) => {
+    const { githubOrg, githubToken, travisToken } = options;
+    if (githubOrg) {
+      prefs.githubOrg = undefined;
+      alertErr( 'github organization cleared.' );
+    }
+    if (githubToken) {
+      prefs.githubToken = undefined;
+      alertErr( 'github token cleared.' );
+    }
+    if (travisToken) {
+      prefs.travisToken = undefined;
+      alertErr( 'travis token cleared.' );
+    }
+    if ( !githubOrg && !githubToken && !travisToken ) {
+      prefs.githubOrg = undefined;
+      prefs.githubToken = undefined;
+      prefs.travisToken = undefined;
+      alertErr( 'Github and Travis configurations have been removed.' );
+    }
   });
 
-
 program
-  .command('setup <repoName> [branches]')
-  .description('Create branches for the specified team.')
+  .command('setup-branches <repoName> [branches]')
+  .description('Create branches for the specified team')
   .action((repoName, branches) => {
-    if (!prefs.github_org) return alertErr('No configuration found.  run config');
-    prefs.branches = branches ? JSON.parse(branches) : prefs.students;
+    if (!prefs.githubOrg) return alertErr('No configuration found.  run config');
+    prefs.branches = branches ? branches : prefs.students;
     addBranches( repoName, prefs )
-      .then(() => {
-        alert( 'branches created' );
-        hooks( repoName, prefs );
-        alert( 'hooks complete' );
-      })
+      .then(() => alert( `Branches created for ${repoName}` ))
       .catch( (err) => {
         alertErr('Error setting up repo.');
         alertErr(err);
@@ -59,10 +88,22 @@ program
   });
 
 program
+  .command('setup-travis <repoName>')
+  .description('Activate Travis for the specified repo')
+  .action( ( repoName ) => {
+    activateTravis( repoName, prefs )
+      .then(() => alert(`Travis-CI activated for ${repoName}`))
+      .catch( err => {
+        alertErr('Error setting up Travis-CI.');
+        alertErr(err);
+      });
+  });
+    
+program
   .command('close <repoName>')
   .description('merge student branches into master folders')
   .action((repoName) => {
-    if (!prefs.github_org) return alertErr('No configuration found.  run config');
+    if (!prefs.githubOrg) return alertErr('No configuration found.  run config');
     close(repoName, prefs)
       .then( () => alert(`repo "${repoName}" closed out`))
       .catch(err => {
@@ -75,6 +116,7 @@ program
   .command('team [filepath]')
   .description('set teams to specified json filepath')
   .action((filepath) => {
+    if (!prefs.students) return alertErr('No team is setup.');
     if (!filepath && prefs.students) {
       alert('Teams currently set to: ');
       return console.log(prefs.students);
