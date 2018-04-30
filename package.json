@@ -1,12 +1,12 @@
 {
   "name": "tai",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "a tool for managing student assignment repos",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "test": "mocha",
-    "test:watch":"mocha -w"
+    "test:watch": "mocha -w"
   },
   "repository": {
     "type": "git",
@@ -27,8 +27,8 @@
   "homepage": "https://github.com/codefellows-portland-javascript-401d2/tai#readme",
   "dependencies": {
     "chalk": "^2.4.0",
+    "commander": "^2.15.1",
     "github-api": "^3.0.0",
-    "nodegit": "^0.22.0",
     "preferences": "^1.0.2",
     "request": "^2.85.0",
     "sander": "^0.6.0",
