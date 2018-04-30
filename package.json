@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "mocha",
-    "test:watch":"mocha -w"
+    "test:watch": "mocha -w"
   },
   "repository": {
     "type": "git",
@@ -27,6 +27,7 @@
   "homepage": "https://github.com/codefellows-portland-javascript-401d2/tai#readme",
   "dependencies": {
     "chalk": "^2.4.0",
+    "commander": "^2.15.1",
     "github-api": "^3.0.0",
     "nodegit": "^0.22.0",
     "preferences": "^1.0.2",
