@@ -8,7 +8,7 @@
       "type": "node",
       "request": "launch",
       "name": "Launch Program",
-      "program": "${workspaceFolder}/index.js setup test-tai-target"
+      "program": "${workspaceFolder}/index.js"
     }
   ]
 }
