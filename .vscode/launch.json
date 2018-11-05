@@ -15,6 +15,7 @@
       "request": "launch",
       "name": "Launch Program",
       "program": "${workspaceFolder}/index.js",
-      "args": [ "close",  "test-tai-target" ]
+      "args": [ "close",  "install-node" ],
+    }
   ]
 }
