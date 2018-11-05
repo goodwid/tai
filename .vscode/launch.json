@@ -7,8 +7,14 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Launch Testing",
+      "program": "${workspaceFolder}/testing.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Launch Program",
-      "program": "${workspaceFolder}/index.js setup test-tai-target"
-    }
+      "program": "${workspaceFolder}/index.js",
+      "args": [ "close",  "test-tai-target" ]
   ]
 }
